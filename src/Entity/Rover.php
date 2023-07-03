@@ -21,9 +21,18 @@ class Rover
     #[ORM\OneToMany(mappedBy: 'rover', targetEntity: Photo::class, orphanRemoval: true)]
     private Collection $photos;
 
+    #[ORM\ManyToMany(targetEntity: Camera::class, inversedBy: 'rovers')]
+    private Collection $Camera;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
+        $this->Camera = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 
     public function getId(): ?int
@@ -69,6 +78,30 @@ class Rover
                 $photo->setRover(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Camera>
+     */
+    public function getCamera(): Collection
+    {
+        return $this->Camera;
+    }
+
+    public function addCamera(Camera $camera): static
+    {
+        if (!$this->Camera->contains($camera)) {
+            $this->Camera->add($camera);
+        }
+
+        return $this;
+    }
+
+    public function removeCamera(Camera $camera): static
+    {
+        $this->Camera->removeElement($camera);
 
         return $this;
     }

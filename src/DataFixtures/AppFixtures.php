@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Camera;
+use App\Entity\Rover;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -23,17 +24,17 @@ class AppFixtures extends Fixture
         // Setting rovers defined in brief
 
         $rover1 = new Rover();
-        $rover1->setName("Curiosity");
+        $rover1->setName("curiosity");
         $rover1->setCameras([$camera1, $camera2]);
         $manager->persist($rover1);
 
         $rover2 = new Rover();
-        $rover2->setName("Opportunity");
+        $rover2->setName("opportunity");
         $rover2->setCameras([$camera1, $camera2]);
         $manager->persist($rover2);
 
         $rover3 = new Rover();
-        $rover3->setName("Spirit");
+        $rover3->setName("spirit");
         $rover3->setCameras([$camera1, $camera2]);
         $manager->persist($rover3);
 
