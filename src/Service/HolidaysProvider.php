@@ -3,9 +3,12 @@
 namespace App\Service;
 
 use App\Entity\Holiday;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use function MongoDB\BSON\toJSON;
 
 class HolidaysProvider
 {
@@ -14,11 +17,12 @@ class HolidaysProvider
         private SerializerInterface $serializer,
         #[Autowire('%env(HOLIDAY_API_KEY)%')] private string $holidaysApiKey,
         #[Autowire('%env(HOLIDAY_API_ENDPOINT)%')] private string $holidaysApiUrl,
+        private EntityManagerInterface $entityManager,
     )
     {
     }
 
-    public function getHolidaysFromAPI($country, $year)
+    public function getHolidaysFromAPI(string $country,int $year) : array
     {
         $params = [
             'country' => $country,
@@ -27,24 +31,20 @@ class HolidaysProvider
         ];
 
         $apiParams = http_build_query($params, $arg_separator = "&",);
-
         $response = $this->client->request(
             'GET',
-            $this->holidaysApiUrl . $apiParams
+            $this->holidaysApiUrl ."?". $apiParams
         );
 
+        $content = $response->toArray();
+        $holidays = $content['holidays'];
 
-        $response = $this->client->request('GET', 'https://holidayapi.com/v1/holidays?country=PL&year=2022&key=80d615c5-338b-45d0-a1c9-8d015e371904');
+    $serialized_holidays = $this->serializer->deserialize(json_encode($holidays), Holiday::class . '[]', 'json');
+    foreach ($serialized_holidays as $holiday) {
+        $this->entityManager->persist($holiday);
+    }
+    $this->entityManager->flush();
 
-
-        $content = $response->getContent();
-
-        $x = $this->serializer->deserialize($content, Holiday::class, 'json');
-
-        dd($x);
-
-//        $statusCode = $response->getStatusCode();
-//        $content = $response->toArray();
-//        dd($content["holidays"]);
+    return $serialized_holidays;
     }
 }

@@ -38,31 +38,19 @@ class GetHolidaysCommand extends Command
 
         $country = $input->getArgument('country');
         $year = $input->getArgument('year');
-
-
-
-
-//        $client = HttpClient::create();
-//        $response = $this->client->request('GET', 'https://holidayapi.com/v1/holidays?country=PL&year=2022&key=80d615c5-338b-45d0-a1c9-8d015e371904');
-//        $statusCode = $response->getStatusCode();
-//        $content = $response->toArray();
-//        dd($content["holidays"]);
-
-
         if (!$country) {
             $country = 'PL';
         }
         if (!$year) {
-            $year = '2022';
+            $year = 2022;
         }
-
-        $this->holidaysProvider->getHolidaysFromAPI($country, $year);
-
         $io->info([sprintf("Country : %s", $country), sprintf("Year : %s", $year)]);
 
+        $holidays = $this->holidaysProvider->getHolidaysFromAPI($country, $year);
 
+        $holidaysCount = count($holidays);
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $io->success(sprintf("Success ! Saved %s holidays", $holidaysCount));
 
         return Command::SUCCESS;
     }
