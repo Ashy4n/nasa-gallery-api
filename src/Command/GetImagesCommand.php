@@ -42,7 +42,7 @@ class GetImagesCommand extends Command
         if ($input->getOption('option1')) {
             // ...
         }
-        $img = $this->imageProvider->getImages('2021-07-01');
+        $img = $this->imageProvider->getImagesForHolidays();
         dd($img);
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 
