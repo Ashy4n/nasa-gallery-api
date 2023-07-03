@@ -38,19 +38,25 @@ class GetHolidaysCommand extends Command
 
         $country = $input->getArgument('country');
         $year = $input->getArgument('year');
+
         if (!$country) {
             $country = 'PL';
         }
         if (!$year) {
             $year = 2022;
         }
+
         $io->info([sprintf("Country : %s", $country), sprintf("Year : %s", $year)]);
 
-        $holidays = $this->holidaysProvider->getHolidaysFromAPI($country, $year);
+        try {
+            $holidays = $this->holidaysProvider->get($country, $year);
+            $this->holidaysProvider->save($holidays);
+        }catch (\Exception $exception) {
+            $io->error($exception->getMessage());
+            return Command::FAILURE;
+        }
 
-        $holidaysCount = count($holidays);
-
-        $io->success(sprintf("Success ! Saved %s holidays", $holidaysCount));
+        $io->success(sprintf("Success ! Saved %s holidays", count($holidays)));
 
         return Command::SUCCESS;
     }
