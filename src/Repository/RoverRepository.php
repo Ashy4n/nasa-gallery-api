@@ -39,7 +39,14 @@ class RoverRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
+    public function removeAll(): void
+    {
+        $this->createQueryBuilder('r')
+            ->delete()
+            ->getQuery()
+            ->execute();
+    }
+    //    /**
 //     * @return Rover[] Returns an array of Rover objects
 //     */
 //    public function findByExampleField($value): array

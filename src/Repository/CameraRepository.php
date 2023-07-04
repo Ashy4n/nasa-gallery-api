@@ -39,6 +39,13 @@ class CameraRepository extends ServiceEntityRepository
         }
     }
 
+    public function removeAll(): void
+    {
+        $this->createQueryBuilder('c')
+            ->delete()
+            ->getQuery()
+            ->execute();
+    }
 //    /**
 //     * @return Camera[] Returns an array of Camera objects
 //     */
