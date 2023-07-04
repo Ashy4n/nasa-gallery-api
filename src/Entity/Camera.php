@@ -6,7 +6,6 @@ use App\Repository\CameraRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CameraRepository::class)]
 class Camera
@@ -17,7 +16,6 @@ class Camera
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Unique()]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'camera', targetEntity: Photo::class, orphanRemoval: true)]
