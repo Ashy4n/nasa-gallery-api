@@ -2,10 +2,10 @@
 
 namespace App\Service;
 
-use App\DTO\Camera;
-use App\DTO\Rover;
+use App\Entity\Camera;
 use App\Entity\Holiday;
 use App\Entity\Photo;
+use App\Entity\Rover;
 use App\Repository\CameraRepository;
 use App\Repository\HolidayRepository;
 use App\Repository\RoverRepository;
@@ -30,14 +30,18 @@ class PhotoProvider
     {
     }
 
-    public function getPhotosFromHolidays(bool $public = true)
+    /**
+     * @param Rover[] $rovers
+     *  @param Camera[] $cameras
+     */
+    public function getPhotosFromHolidays(bool $public = true, array $rovers = [], array $cameras = [])
     {
         $holidays = $public ? $this->holidayRepository->findBy(['public' => $public]) : $this->holidayRepository->findAll();
-        $rovers = $this->roverRepository->findAll();
-        $cameras = $this->cameraRepository->findAll();
+        $filteredRovers = $rovers ? $rovers :  $this->roverRepository->findAll();
+        $filteredCameras = $cameras ? $cameras : $this->cameraRepository->findAll();
 
-        foreach ($rovers as $rover) {
-            foreach ($cameras as $camera) {
+        foreach ($filteredRovers as $rover) {
+            foreach ($filteredCameras as $camera) {
                 foreach ($holidays as $holiday) {
                     $date = $holiday->getDate()->format('Y-m-d');
                     $images = $this->getPhoto($date, $rover, $camera);
@@ -66,6 +70,10 @@ class PhotoProvider
             'GET',
             $this->nasaApiUrl . $rover . "/photos?" . $apiParams
         );
+
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception('Error while getting holidays from API');
+        }
 
         return $response->toArray()['photos'];
     }

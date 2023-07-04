@@ -41,9 +41,13 @@ class CameraRepository extends ServiceEntityRepository
 
     public function removeAll(): void
     {
-        $this->createQueryBuilder('c')
-            ->delete()
-            ->getQuery()
-            ->execute();
+        $entityManager = $this->getEntityManager();
+        $entities = $this->findAll();
+
+        foreach ($entities as $entity) {
+            $entityManager->remove($entity);
+        }
+
+        $entityManager->flush();
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Repository\CameraRepository;
+use App\Repository\RoverRepository;
 use App\Service\PhotoProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -13,11 +15,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:get-photos',
-    description: 'Add a short description for your command',
+    description: 'Gets photos for defined holidays from NASA API'
 )]
 class GetPhotosCommand extends Command
 {
-    public function __construct(private PhotoProvider $imageProvider)
+    private const DEFAULT_CAMERAS = ['FHAZ', 'RHAZ'];
+
+    public function __construct(
+        private PhotoProvider    $photoProvider,
+        private RoverRepository  $roverRepository,
+        private CameraRepository $cameraRepository,
+    )
     {
         parent::__construct();
     }
@@ -25,21 +33,37 @@ class GetPhotosCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('isPublic', InputArgument::OPTIONAL, 'Define if you want get only public holidays', true)
-        ;
+            ->addArgument(
+                'isPublic',
+                InputArgument::OPTIONAL,
+                'Define if you want get only public holidays',
+                true
+            )
+            ->addArgument(
+                'year',
+                InputArgument::OPTIONAL,
+                'Define rovers work year',
+                2022
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $isPublic = $input->getArgument('isPublic');
+        $year = $input->getArgument('year');
 
+        $cameras = $this->cameraRepository->findBy(['name' => self::DEFAULT_CAMERAS]);
+        $rovers = $this->roverRepository->findRoversByYear($year);
 
+        try {
+            $this->photoProvider->getPhotosFromHolidays($isPublic, $rovers, $cameras);
+        } catch (\Exception $exception) {
+            $io->error($exception->getMessage());
+            return Command::FAILURE;
+        }
 
-        $this->imageProvider->getPhotosFromHolidays($isPublic);
-//        dd($img);
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-
+        $io->success('You have successfully get photos from NASA API');
 
         return Command::SUCCESS;
     }

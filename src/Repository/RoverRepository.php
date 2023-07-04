@@ -41,33 +41,34 @@ class RoverRepository extends ServiceEntityRepository
 
     public function removeAll(): void
     {
-        $this->createQueryBuilder('r')
-            ->delete()
-            ->getQuery()
-            ->execute();
-    }
-    //    /**
-//     * @return Rover[] Returns an array of Rover objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        $entityManager = $this->getEntityManager();
+        $entities = $this->findAll();
 
-//    public function findOneBySomeField($value): ?Rover
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        foreach ($entities as $entity) {
+            $entityManager->remove($entity);
+        }
+
+        $entityManager->flush();
+    }
+
+    public function findRoversByYear(int $year): array
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder
+            ->where($queryBuilder->expr()->andX(
+                $queryBuilder->expr()->lt('r.min_date', ':firstYearDay'),
+                $queryBuilder->expr()->gt('r.max_date', ':firstYearDay')
+            ))
+            ->orWhere($queryBuilder->expr()->andX(
+                $queryBuilder->expr()->lt('r.min_date', ':lastYearDay'),
+                $queryBuilder->expr()->gt('r.max_date', ':lastYearDay')
+            ))
+            ->setParameter('firstYearDay', $year . '-01-01')
+            ->setParameter('lastYearDay', $year . '-12-31');
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getResult();
+    }
+
 }

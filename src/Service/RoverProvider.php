@@ -31,7 +31,6 @@ class RoverProvider
         $this->cameraRepository->removeAll();
     }
 
-
     public function saveRovers(array $rovers)
     {
         foreach ($rovers as $rover) {

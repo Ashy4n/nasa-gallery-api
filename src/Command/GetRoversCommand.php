@@ -37,7 +37,7 @@ class GetRoversCommand extends Command
             return Command::FAILURE;
         }
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $io->success(sprintf('You have successfully saved %s rovers and their cameras to database', count($rovers)));
 
         return Command::SUCCESS;
     }
