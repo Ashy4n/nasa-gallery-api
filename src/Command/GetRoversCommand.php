@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:get-rovers',
-    description: 'Add a short description for your command',
+    description: 'Gets rover and cameras data from NASA API and saves it to database',
 )]
 class GetRoversCommand extends Command
 {
@@ -24,29 +24,18 @@ class GetRoversCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        try {
+            $rovers = $this->roverProvider->getRovers();
+            $this->roverProvider->clearTables();
+            $this->roverProvider->saveRovers($rovers);
+        }catch (\Exception $e) {
+            $io->error($e->getMessage());
+            return Command::FAILURE;
         }
-
-        if ($input->getOption('option1')) {
-            // ...
-        }
-
-        $rovers = $this->roverProvider->getRovers();
-        $this->roverProvider->saveRovers($rovers);
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 

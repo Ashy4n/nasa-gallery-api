@@ -8,4 +8,5 @@
 /var/
 /vendor/
 brief.pdf
+.idea
 ###< symfony/framework-bundle ###

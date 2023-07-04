@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Camera;
 use App\Entity\Rover;
 use App\Repository\CameraRepository;
+use App\Repository\RoverRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -18,8 +19,16 @@ class RoverProvider
         private string $nasaApiUrl,
         private HttpClientInterface $client,
         private EntityManagerInterface $entityManager,
+        private CameraRepository $cameraRepository,
+        private RoverRepository $roverRepository
     )
     {
+    }
+
+    public function clearTables()
+    {
+        $this->roverRepository->removeAll();
+        $this->cameraRepository->removeAll();
     }
 
 
@@ -32,13 +41,18 @@ class RoverProvider
             $newRover->setMaxDate(new \DateTime($rover['max_date']) );
 
             foreach ($rover['cameras'] as $camera){
+                $existingCamera = $this->cameraRepository->findOneBy(['name' => $camera['name']]);
+
+                if ($existingCamera) {
+                    $newRover->addCamera($existingCamera);
+                    continue;
+                }
+
                 $newCamera = new Camera();
                 $newCamera->setName($camera['name']);
                 $newCamera->setFullName($camera['full_name']);
 
-                $newRover->addCamera($newCamera);
-
-                $this->entityManager->persist($newCamera);
+                $this->cameraRepository->save($newCamera,true);
             }
 
             $this->entityManager->persist($newRover);
