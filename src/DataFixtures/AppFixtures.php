@@ -25,17 +25,20 @@ class AppFixtures extends Fixture
 
         $rover1 = new Rover();
         $rover1->setName("curiosity");
-        $rover1->setCameras([$camera1, $camera2]);
+        $rover1->addCamera($camera1);
+        $rover1->addCamera($camera2);
         $manager->persist($rover1);
 
         $rover2 = new Rover();
         $rover2->setName("opportunity");
-        $rover2->setCameras([$camera1, $camera2]);
+        $rover2->addCamera($camera1);
+        $rover2->addCamera($camera2);
         $manager->persist($rover2);
 
         $rover3 = new Rover();
         $rover3->setName("spirit");
-        $rover3->setCameras([$camera1, $camera2]);
+        $rover3->addCamera($camera1);
+        $rover3->addCamera($camera2);
         $manager->persist($rover3);
 
         $manager->flush();

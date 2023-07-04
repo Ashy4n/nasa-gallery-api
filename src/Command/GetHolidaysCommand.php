@@ -19,7 +19,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class GetHolidaysCommand extends Command
 {
-    public  function __construct(private HolidaysProvider $holidaysProvider)
+    public function __construct(private HolidaysProvider $holidaysProvider)
     {
         parent::__construct();
     }
@@ -27,9 +27,18 @@ class GetHolidaysCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('country', InputArgument::OPTIONAL, 'Country of holidays that you want to get')
-            ->addArgument('year', InputArgument::OPTIONAL, 'Year of holidays that you want to get')//            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+            ->addArgument(
+                'country',
+                InputArgument::OPTIONAL,
+                'Country of holidays that you want to get',
+                'PL'
+            )
+            ->addArgument(
+                'year',
+                InputArgument::OPTIONAL,
+                'Year of holidays that you want to get',
+                2022
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -39,19 +48,12 @@ class GetHolidaysCommand extends Command
         $country = $input->getArgument('country');
         $year = $input->getArgument('year');
 
-        if (!$country) {
-            $country = 'PL';
-        }
-        if (!$year) {
-            $year = 2022;
-        }
-
         $io->info([sprintf("Country : %s", $country), sprintf("Year : %s", $year)]);
 
         try {
             $holidays = $this->holidaysProvider->get($country, $year);
             $this->holidaysProvider->save($holidays);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $io->error($exception->getMessage());
             return Command::FAILURE;
         }

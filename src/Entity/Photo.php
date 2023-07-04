@@ -25,6 +25,17 @@ class Photo
     #[ORM\JoinColumn(nullable: false)]
     private ?Camera $camera = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $imgSrc = null;
+
+    public function __construct(\DateTimeInterface $date, Rover $rover, Camera $camera, string $imgSrc)
+    {
+        $this->date = $date;
+        $this->rover = $rover;
+        $this->camera = $camera;
+        $this->imgSrc = $imgSrc;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +73,18 @@ class Photo
     public function setCamera(?Camera $camera): static
     {
         $this->camera = $camera;
+
+        return $this;
+    }
+
+    public function getImgSrc(): ?string
+    {
+        return $this->imgSrc;
+    }
+
+    public function setImgSrc(string $imgSrc): static
+    {
+        $this->imgSrc = $imgSrc;
 
         return $this;
     }
