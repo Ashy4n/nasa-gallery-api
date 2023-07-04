@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RoverRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoverRepository::class)]
@@ -23,6 +24,12 @@ class Rover
 
     #[ORM\ManyToMany(targetEntity: Camera::class, inversedBy: 'rovers')]
     private Collection $Camera;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $min_date = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $max_date = null;
 
     public function __construct()
     {
@@ -102,6 +109,30 @@ class Rover
     public function removeCamera(Camera $camera): static
     {
         $this->Camera->removeElement($camera);
+
+        return $this;
+    }
+
+    public function getMinDate(): ?\DateTimeInterface
+    {
+        return $this->min_date;
+    }
+
+    public function setMinDate(\DateTimeInterface $min_date): static
+    {
+        $this->min_date = $min_date;
+
+        return $this;
+    }
+
+    public function getMaxDate(): ?\DateTimeInterface
+    {
+        return $this->max_date;
+    }
+
+    public function setMaxDate(\DateTimeInterface $max_date): static
+    {
+        $this->max_date = $max_date;
 
         return $this;
     }

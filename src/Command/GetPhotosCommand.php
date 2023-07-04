@@ -25,21 +25,18 @@ class GetPhotosCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('public', 'p', InputOption::VALUE_NONE, 'Option description')
+            ->addArgument('isPublic', InputArgument::OPTIONAL, 'Define if you want get only public holidays', true)
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $isPublic = $input->getArgument('isPublic');
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
-        }
 
-//        $img = $this->imageProvider->getImagesForHolidays();
+
+        $this->imageProvider->getPhotosFromHolidays($isPublic);
 //        dd($img);
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 

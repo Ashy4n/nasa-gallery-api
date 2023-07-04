@@ -24,6 +24,9 @@ class Camera
     #[ORM\ManyToMany(targetEntity: Rover::class, mappedBy: 'Camera')]
     private Collection $rovers;
 
+    #[ORM\Column(length: 255)]
+    private ?string $full_name = null;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -105,6 +108,18 @@ class Camera
         if ($this->rovers->removeElement($rover)) {
             $rover->removeCamera($this);
         }
+
+        return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->full_name;
+    }
+
+    public function setFullName(string $full_name): static
+    {
+        $this->full_name = $full_name;
 
         return $this;
     }
