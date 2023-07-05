@@ -66,22 +66,6 @@ symfony conosle app:get-defaults
 ```
 or seperate [Commands](#Commands) section.
 
-#### Load Polish holidays data:
-```bash
-symfony conosle doctrine:migrations:migrate
-```
-
-#### Load NASA Mars Rover data:
-```bash
-symfony conosle app:default-setup
-```
-
-#### Load Polish holidays data:
-
-```bash
-symfony conosle app:holidays:load
-``` 
-
 ## Usage
 
 Start the Symfony development server:
@@ -140,18 +124,25 @@ Get details of a photo:
 ## Commands
 
 This application provides the following console commands:
-app:holidays:load
 
-This command fetches and saves the list of Polish holidays in 2021 to the database. You can use this command to refresh the holiday data.
+#### Load Polish holidays data:
 
-bash
+This command fetches and saves the list of holidays to the database.
+You can specify country and year arguments to get more specific data.
+Default values are set to get data for Polish holidays in 2022.
+```bash
+symfony conosle app:get-holidays
+```
 
-php bin/console app:holidays:load
+#### Load Polish NASA Rovers and cameras data:
+This command fetches and saves the list of rovers and cameras available by NASA api.
+```bash
+symfony conosle app:get-rovers
+```
 
-app:photos:load
-
-This command fetches and saves the Mars Rover photos for the holidays in 2021 from the NASA API to the database. You can use this command to refresh the photo data.
-
-bash
-
-php bin/console app:photos:load
+#### Load Polish NASA Photos data:
+This command fetches and saves photos from Nasa API for all holidays that are in database.
+You need to have rovers and cameras data in database to use this command.
+```bash
+symfony conosle app:get-photos
+```
