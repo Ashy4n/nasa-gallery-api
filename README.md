@@ -2,7 +2,7 @@
 
 This Symfony application provides a REST API that returns JSON containing holiday information and related photos taken on specific dates or date ranges.
 The application integrates with the NASA Mars Rover Photos API to fetch and store the images.
-And holidayapi.com API to fetch and store the holidays.
+And https://date.nager.at API to fetch and store the holidays.
 
 ## Prerequisites
 
@@ -11,7 +11,6 @@ Before using this application, make sure you have the following:
 - PHP 8.1 or higher installed on your system.
 - Composer installed to manage PHP dependencies.
 - An API key from NASA's API. You can sign up for a free API key at https://api.nasa.gov/index.html#apply-for-an-api-key.
-- An API key from Holiday API. You can sign up for a free API key at https://holidayapi.com/.
 
 
 ## Installation
@@ -31,22 +30,6 @@ Install the dependencies:
 ```bash
 composer install
 ```
-
-
-[//]: # (Configure the NASA API key:)
-
-[//]: # ()
-[//]: # (    Copy the .env file:)
-
-[//]: # ()
-[//]: # (    bash)
-
-[//]: # ()
-[//]: # (    cp .env.example .env)
-
-[//]: # ()
-[//]: # (    Open the .env file and set the value of NASA_API_KEY to your NASA API key.)
-
 ## Set up the database
 You can configure your database credentials in the .env file.
 

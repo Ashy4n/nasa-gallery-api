@@ -22,10 +22,8 @@ class Holiday
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 2)]
-    private ?string $country = null;
+    private ?string $countryCode = null;
 
-    #[ORM\Column]
-    private ?bool $public = null;
 
     public function getId(): ?int
     {
@@ -56,27 +54,16 @@ class Holiday
         return $this;
     }
 
-    public function getCountry(): ?string
+    public function getCountryCode(): ?string
     {
-        return $this->country;
+        return $this->countryCode;
     }
 
-    public function setCountry(string $country): static
+    public function setCountryCode(string $country): static
     {
-        $this->country = $country;
+        $this->countryCode = $country;
 
         return $this;
     }
 
-    public function isPublic(): ?bool
-    {
-        return $this->public;
-    }
-
-    public function setPublic(bool $public): static
-    {
-        $this->public = $public;
-
-        return $this;
-    }
 }

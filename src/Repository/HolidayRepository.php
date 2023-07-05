@@ -39,6 +39,18 @@ class HolidayRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Holiday[] $holidays
+     */
+    public function saveAll(array $holidays): void
+    {
+        foreach ($holidays as $holiday) {
+            dump($holiday);
+            $this->save($holiday);
+        }
+
+        $this->getEntityManager()->flush();
+    }
     public function removeAll(): void
     {
         $entityManager = $this->getEntityManager();
