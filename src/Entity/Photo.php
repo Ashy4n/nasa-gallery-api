@@ -14,11 +14,11 @@ class Photo
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('photo:read')]
+    #[Groups(['photo:read', 'photos:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups('photo:read')]
+    #[Groups(['photo:read', 'photos:read'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'photos')]
@@ -53,13 +53,6 @@ class Photo
         return $this->date;
     }
 
-//    #[Groups('photo:read')]
-//    public function getDateString(): string
-//    {
-//        return $this->date->format('Y-m-d');
-//    }
-
-
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
@@ -73,6 +66,12 @@ class Photo
         return $this->rover;
     }
 
+    #[Groups('photos:read')]
+    public function getRoverName(): string
+    {
+        return $this->rover->getName();
+    }
+
     public function setRover(?Rover $rover): static
     {
         $this->rover = $rover;
@@ -83,6 +82,12 @@ class Photo
     public function getCamera(): ?Camera
     {
         return $this->camera;
+    }
+
+    #[Groups('photos:read')]
+    public function getCameraName(): string
+    {
+        return $this->camera->getName();
     }
 
     public function setCamera(?Camera $camera): static

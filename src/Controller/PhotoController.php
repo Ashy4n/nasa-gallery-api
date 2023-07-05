@@ -2,28 +2,28 @@
 
 namespace App\Controller;
 
-use App\Entity\Camera;
 use App\Entity\Photo;
-use App\Entity\Rover;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class PhotoController extends AbstractController
 {
-    #[Route('/photo/{id}', name: 'app_image' ,priority: 2)]
-    public function getPhoto(Photo $photo, SerializerInterface $serializer): JsonResponse
+    public function __construct(
+       private SerializerInterface $serializer
+    )
     {
-        $serializedData = $serializer->serialize($photo, 'json',[
+    }
+
+    #[Route('/photo/{id}', name: 'app_photo')]
+    public function getPhoto(Photo $photo ): JsonResponse
+    {
+        $serializedData = $this->serializer->serialize($photo, 'json',[
             AbstractNormalizer::GROUPS => ['photo:read']
         ]);
 
         return new JsonResponse($serializedData, 200, [], true);
     }
-
-
 }

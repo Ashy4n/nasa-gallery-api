@@ -56,12 +56,12 @@ class RoverRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('r');
         $queryBuilder
             ->where($queryBuilder->expr()->andX(
-                $queryBuilder->expr()->lt('r.min_date', ':firstYearDay'),
-                $queryBuilder->expr()->gt('r.max_date', ':firstYearDay')
+                $queryBuilder->expr()->lte('r.min_date', ':firstYearDay'),
+                $queryBuilder->expr()->gte('r.max_date', ':firstYearDay')
             ))
             ->orWhere($queryBuilder->expr()->andX(
-                $queryBuilder->expr()->lt('r.min_date', ':lastYearDay'),
-                $queryBuilder->expr()->gt('r.max_date', ':lastYearDay')
+                $queryBuilder->expr()->lte('r.min_date', ':lastYearDay'),
+                $queryBuilder->expr()->gte('r.max_date', ':lastYearDay')
             ))
             ->setParameter('firstYearDay', $year . '-01-01')
             ->setParameter('lastYearDay', $year . '-12-31');

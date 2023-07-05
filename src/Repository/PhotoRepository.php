@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DTO\HolidayParamsInput;
 use App\Entity\Photo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -38,6 +39,45 @@ class PhotoRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findByParams(HolidayParamsInput $params): array
+    {
+        $entityManager = $this->getEntityManager();
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('p')
+            ->from(Photo::class, 'p')
+            ->leftJoin('p.rover', 'r')
+            ->leftJoin('p.camera', 'c')
+            ->orderBy('p.id', 'ASC');
+
+        if ($params->rover) {
+            $queryBuilder->andWhere('LOWER(r.name) = :rover')
+                ->setParameter('rover', $params->rover);
+        }
+
+        if ($params->camera) {
+            $queryBuilder->andWhere('LOWER(c.name) = :camera')
+                ->setParameter('camera', $params->camera);
+        }
+
+        if ($params->start_date && $params->end_date) {
+            $queryBuilder->andWhere($queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->gte('p.date', ':start'),
+                    $queryBuilder->expr()->lte('p.date', ':end')
+                ))
+                ->setParameter('start', $params->start_date)
+                ->setParameter('end',$params->end_date);
+        }
+
+        if ($params->date) {
+            $queryBuilder->andWhere('p.date = :date')
+                ->setParameter('date', $params->date);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 
     public function removeAll(): void
     {
