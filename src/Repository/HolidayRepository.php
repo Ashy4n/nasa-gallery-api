@@ -45,7 +45,6 @@ class HolidayRepository extends ServiceEntityRepository
     public function saveAll(array $holidays): void
     {
         foreach ($holidays as $holiday) {
-            dump($holiday);
             $this->save($holiday);
         }
 

@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Entity\Holiday;
 use App\Repository\HolidayRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -13,34 +12,27 @@ class HolidaysProvider
 {
 
     public function __construct(
-        #[Autowire('%env(HOLIDAY_API_ENDPOINT)%')] private string $holidaysApiUrl,
-        private HttpClientInterface                               $client,
-        private SerializerInterface                               $serializer,
-        private EntityManagerInterface                            $entityManager,
-        private HolidayRepository                                 $holidayRepository,
+        #[Autowire('%env(HOLIDAY_API_ENDPOINT)%')]
+        private string              $holidaysApiUrl,
+        private HttpClientInterface $client,
+        private SerializerInterface $serializer,
+        private HolidayRepository   $holidayRepository,
     )
     {
     }
 
-    public function save(array $holidays): void
+    public function save(array $holidays, bool $removeOld): void
     {
-        $this->holidayRepository->removeAll();
+        if ($removeOld) {
+            $this->holidayRepository->removeAll();
+        }
 
         $serializedHolidays = $this->serializer->deserialize(json_encode($holidays), Holiday::class . '[]', 'json');
-
         $this->holidayRepository->saveAll($serializedHolidays);
     }
 
     public function get(string $country, int $year): array
     {
-        $params = [
-            'country' => $country,
-            'year' => $year,
-        ];
-
-        $apiParams = http_build_query($params, $arg_separator = "/",);
-
-
         $response = $this->client->request(
             'GET',
             $this->holidaysApiUrl . "{$year}/{$country}",
@@ -50,8 +42,6 @@ class HolidaysProvider
             throw new \Exception('Error while getting holidays from API');
         }
 
-        $content = $response->toArray();
-
-        return $content;
+        return $response->toArray();
     }
 }

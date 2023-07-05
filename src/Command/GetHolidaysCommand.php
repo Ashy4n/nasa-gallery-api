@@ -9,9 +9,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
 
 #[AsCommand(
     name: 'app:get-holidays',
@@ -19,7 +22,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class GetHolidaysCommand extends Command
 {
-    public function __construct(private HolidaysProvider $holidaysProvider)
+    public function __construct(
+        #[Autowire('%env(DEFAULT_YEAR)%')]
+        private string           $defaultYear,
+        #[Autowire('%env(DEFAULT_COUNTRY)%')]
+        private string           $defaultCountry,
+        private HolidaysProvider $holidaysProvider
+    )
     {
         parent::__construct();
     }
@@ -27,17 +36,19 @@ class GetHolidaysCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument(
-                'country',
-                InputArgument::OPTIONAL,
-                'Country of holidays that you want to get',
-                'PL'
-            )
-            ->addArgument(
+            ->addOption(
                 'year',
+                'y',
                 InputArgument::OPTIONAL,
                 'Year of holidays that you want to get',
-                2022
+                $this->defaultYear
+            )
+            ->addOption(
+                'country',
+                'c',
+                InputArgument::OPTIONAL,
+                'Country of holidays that you want to get',
+                $this->defaultCountry
             );
     }
 
@@ -45,14 +56,21 @@ class GetHolidaysCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $country = $input->getArgument('country');
-        $year = $input->getArgument('year');
+        $country = $input->getOption('country');
+        $year = $input->getOption('year');
+        $remove = $input->getOption('remove');
 
-        $io->info([sprintf("Country : %s", $country), sprintf("Year : %s", $year)]);
+        $io->info([
+            sprintf("Country : %s", $country),
+            sprintf("Year : %s", $year),
+        ]);
+
+        $question = new ConfirmationQuestion('Do you want to clear database before adding new records ?',true);
+        $delete = $io->askQuestion($question);
 
         try {
             $holidays = $this->holidaysProvider->get($country, $year);
-            $this->holidaysProvider->save($holidays);
+            $this->holidaysProvider->save($holidays, $delete);
         } catch (\Exception $exception) {
             $io->error($exception->getMessage());
             return Command::FAILURE;
