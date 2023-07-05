@@ -60,11 +60,10 @@ symfony conosle doctrine:migrations:migrate
 ```
 ## Loading data
 
-You can get all data using console command 
+You can get all data using this command or use seperate [Commands](#Commands) to get specific data.
 ```bash
 symfony conosle app:get-defaults
 ```
-or seperate [Commands](#Commands) section.
 
 ## Usage
 
@@ -119,7 +118,7 @@ Get holiday photos for a specific rover and camera:
 Get details of a photo:
 
 ```
-/photo/123
+/photos/123
 ```
 ## Commands
 

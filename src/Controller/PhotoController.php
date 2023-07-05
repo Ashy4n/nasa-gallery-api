@@ -17,7 +17,7 @@ class PhotoController extends AbstractController
     {
     }
 
-    #[Route('/photo/{id}', name: 'app_photo')]
+    #[Route('/photos/{id}', name: 'app_photo')]
     public function getPhoto(Photo $photo ): JsonResponse
     {
         $serializedData = $this->serializer->serialize($photo, 'json',[
