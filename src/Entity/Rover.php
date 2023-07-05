@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: RoverRepository::class)]
 class Rover
 {
+    public const RoversNames = ['curiosity', 'spirit', 'opportunity', 'perseverance'];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

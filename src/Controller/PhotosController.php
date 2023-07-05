@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\HolidayDTO;
-use App\DTO\HolidayParamsInput;
+use App\DTO\PhotosParamsInput;
 use App\Repository\PhotoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +22,7 @@ class PhotosController extends AbstractController
     }
 
     #[Route('/photos', name: 'app_photos')]
-    public function getPhotos(#[MapQueryString] ?HolidayParamsInput $params): JsonResponse
+    public function getPhotos(#[MapQueryString] ?PhotosParamsInput $params): JsonResponse
     {
         if (!$params) {
             $photos = $this->photoRepository->findAll();

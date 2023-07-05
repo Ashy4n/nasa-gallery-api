@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: CameraRepository::class)]
 class Camera
 {
+    public const CameraNames = ['fhaz', 'rhaz'];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

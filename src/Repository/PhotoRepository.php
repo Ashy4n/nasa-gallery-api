@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\DTO\HolidayParamsInput;
+use App\DTO\PhotosParamsInput;
 use App\Entity\Photo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,7 +40,7 @@ class PhotoRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByParams(HolidayParamsInput $params): array
+    public function findByParams(PhotosParamsInput $params): array
     {
         $entityManager = $this->getEntityManager();
         $queryBuilder = $entityManager->createQueryBuilder();
