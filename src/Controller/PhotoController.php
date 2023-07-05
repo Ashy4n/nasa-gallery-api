@@ -15,25 +15,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class PhotoController extends AbstractController
 {
-
-//    #[Route('/photo', name: 'app_image')]
-//    public function getPhotos(): JsonResponse
-//    {
-//        return $this->json([
-//            'message' => 'Welcome to your new controller!',
-//            'path' => 'src/Controller/ImageController.php',
-//        ]);
-//    }
-
     #[Route('/photo/{id}', name: 'app_image' ,priority: 2)]
     public function getPhoto(Photo $photo, SerializerInterface $serializer): JsonResponse
     {
-//        $serializedData = $serializer->serialize($photo, 'json',[
-//            AbstractNormalizer::GROUPS => ['camera','rover']
-//        ]);
-//
-//        dd($serializedData);
-//        return new JsonResponse($serializedData, 200, [], true);
+        $serializedData = $serializer->serialize($photo, 'json',[
+            AbstractNormalizer::GROUPS => ['photo:read']
+        ]);
+
+        return new JsonResponse($serializedData, 200, [], true);
     }
 
 

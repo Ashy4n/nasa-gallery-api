@@ -6,6 +6,7 @@ use App\Repository\CameraRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CameraRepository::class)]
 class Camera
@@ -13,9 +14,11 @@ class Camera
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('photo:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('photo:read')]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'camera', targetEntity: Photo::class, orphanRemoval: true)]
@@ -25,6 +28,7 @@ class Camera
     private Collection $rovers;
 
     #[ORM\Column(length: 255)]
+    #[Groups('photo:read')]
     private ?string $full_name = null;
 
     public function __construct()

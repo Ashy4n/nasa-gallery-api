@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RoverRepository::class)]
 class Rover
@@ -14,8 +15,10 @@ class Rover
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('photo:read')]
     private ?int $id = null;
 
+    #[Groups('photo:read')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -25,9 +28,11 @@ class Rover
     #[ORM\ManyToMany(targetEntity: Camera::class, inversedBy: 'rovers')]
     private Collection $Camera;
 
+    #[Groups('photo:read')]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $min_date = null;
 
+    #[Groups('photo:read')]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $max_date = null;
 
