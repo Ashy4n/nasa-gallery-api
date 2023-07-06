@@ -18,7 +18,7 @@ Before using this application, make sure you have the following:
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/holiday-photos-api.git
+git clone https://github.com/Ashy4n/nasa-gallery-api
 ```
 
 Navigate to the project directory:
