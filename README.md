@@ -43,9 +43,10 @@ symfony conosle doctrine:migrations:migrate
 ```
 ## Loading data
 
-You can get all data using this command or use seperate [Commands](#Commands) to get specific data.
+You can get all data using this command or use separate [Commands](#Commands) to get specific data.
+You can specify country and year options to get more specific data.
 ```bash
-symfony conosle app:get-defaults
+symfony conosle app:get-defaults -y 2022 -c PL
 ```
 
 ## Usage
