@@ -60,7 +60,6 @@ class Photo
         return $this;
     }
 
-
     public function getRover(): ?Rover
     {
         return $this->rover;

@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand(
     name: 'app:default-setup',
@@ -20,6 +21,10 @@ class DefaultSetupCommand extends Command
         private GetHolidaysCommand $holidaysCommand,
         private GetRoversCommand   $roversCommand,
         private GetPhotosCommand   $photosCommand,
+        #[Autowire('%env(DEFAULT_YEAR)%')]
+        private string             $defaultYear,
+        #[Autowire('%env(DEFAULT_COUNTRY)%')]
+        private string             $defaultCountry,
     )
     {
         parent::__construct();
@@ -28,23 +33,19 @@ class DefaultSetupCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument(
-                'country',
-                InputArgument::OPTIONAL,
-                'Country of holidays that you want to get',
-                'PL'
-            )
-            ->addArgument(
+            ->addOption(
                 'year',
+                'y',
                 InputArgument::OPTIONAL,
                 'Year of holidays that you want to get',
-                2022
+                $this->defaultYear
             )
-            ->addArgument(
-                'isPublic',
+            ->addOption(
+                'country',
+                'c',
                 InputArgument::OPTIONAL,
-                'Define if you want get only public holidays',
-                true
+                'Country of holidays that you want to get',
+                $this->defaultCountry
             );
     }
 
@@ -56,7 +57,7 @@ class DefaultSetupCommand extends Command
         $this->roversCommand->execute($input, $output);
         $this->photosCommand->execute($input, $output);
 
-        $io->success('Successfully setup the default data!');
+        $io->success('Successfully added data to database!');
 
         return Command::SUCCESS;
     }

@@ -24,7 +24,7 @@ class PhotoProvider
         private string                 $nasaApiUrl,
         private HttpClientInterface    $client,
         private EntityManagerInterface $entityManager,
-        private PhotoRepository       $photoRepository,
+        private PhotoRepository        $photoRepository,
         private HolidayRepository      $holidayRepository,
         private RoverRepository        $roverRepository,
         private CameraRepository       $cameraRepository
@@ -34,24 +34,22 @@ class PhotoProvider
 
     /**
      * @param Rover[] $rovers
-     *  @param Camera[] $cameras
+     * @param Camera[] $cameras
      */
 
-    public function getPhotosFroHolidays(bool $public = true, array $rovers = [], array $cameras = [])
+    public function getPhotosFroHolidays(array $rovers = [], array $cameras = [])
     {
         $this->photoRepository->removeAll();
 
-
-
-        $holidays = $public ? $this->holidayRepository->findBy(['public' => $public]) : $this->holidayRepository->findAll();
-        $filteredRovers = $rovers ? $rovers :  $this->roverRepository->findAll();
         $filteredCameras = $cameras ? $cameras : $this->cameraRepository->findAll();
+        $filteredRovers = $rovers ? $rovers : $this->roverRepository->findAll();
+        $holidays = $this->holidayRepository->findAll();
 
         foreach ($filteredRovers as $rover) {
             foreach ($filteredCameras as $camera) {
                 foreach ($holidays as $holiday) {
                     $date = $holiday->getDate()->format('Y-m-d');
-                    $images = $this->getPhoto($date, $rover, $camera);
+                    $images = $this->get($date, $rover, $camera);
                     foreach ($images as $image) {
                         $imageSrc = $image['img_src'];
                         $photo = new Photo($holiday->getDate(), $rover, $camera, $imageSrc);
@@ -64,7 +62,7 @@ class PhotoProvider
         $this->entityManager->flush();
     }
 
-    public function getPhoto(string $date, string $rover, string $camera)
+    public function get(string $date, string $rover, string $camera)
     {
         $params = [
             'earth_date' => $date,
@@ -77,6 +75,7 @@ class PhotoProvider
             'GET',
             $this->nasaApiUrl . $rover . "/photos?" . $apiParams
         );
+        dd($this->nasaApiUrl . $rover . "/photos?" . $apiParams);
 
         if ($response->getStatusCode() !== 200) {
             throw new \Exception('Error while getting holidays from API');

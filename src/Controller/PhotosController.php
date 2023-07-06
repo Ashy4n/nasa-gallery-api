@@ -26,7 +26,7 @@ class PhotosController extends AbstractController
     {
         if (!$params) {
             $photos = $this->photoRepository->findAll();
-        }else{
+        } else {
             $photos = $this->photoRepository->findByParams($params);
         }
 

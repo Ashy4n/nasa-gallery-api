@@ -64,7 +64,7 @@ class GetHolidaysCommand extends Command
             sprintf("Year : %s", $year),
         ]);
 
-        $question = new ConfirmationQuestion('Do you want to clear database before adding new records ?',true);
+        $question = new ConfirmationQuestion('Do you want to clear database before adding new records ?', true);
         $delete = $io->askQuestion($question);
 
         try {

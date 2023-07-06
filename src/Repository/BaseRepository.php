@@ -15,18 +15,6 @@ class BaseRepository extends ServiceEntityRepository
         parent::__construct($registry, $entityClass);
     }
 
-    public function removeAll(): void
-    {
-        $entityManager = $this->getEntityManager();
-        $entities = $this->findAll();
-
-        foreach ($entities as $entity) {
-            $entityManager->remove($entity);
-        }
-
-        $entityManager->flush();
-    }
-
     public function save($entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -43,5 +31,26 @@ class BaseRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function saveAll($entities): void
+    {
+        foreach ($entities as $entity) {
+            $this->getEntityManager()->persist($entity);
+        }
+
+        $this->getEntityManager()->flush();
+    }
+
+    public function removeAll(): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entities = $this->findAll();
+
+        foreach ($entities as $entity) {
+            $entityManager->remove($entity);
+        }
+
+        $entityManager->flush();
     }
 }

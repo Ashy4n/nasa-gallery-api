@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand(
     name: 'app:get-photos',
@@ -25,6 +26,8 @@ class GetPhotosCommand extends Command
         private PhotoProvider    $photoProvider,
         private RoverRepository  $roverRepository,
         private CameraRepository $cameraRepository,
+        #[Autowire('%env(DEFAULT_YEAR)%')]
+        private string           $defaultYear,
     )
     {
         parent::__construct();
@@ -32,32 +35,26 @@ class GetPhotosCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->addArgument(
-                'isPublic',
-                InputArgument::OPTIONAL,
-                'Define if you want get only public holidays',
-                true
-            )
-            ->addArgument(
-                'year',
-                InputArgument::OPTIONAL,
-                'Define rovers work year',
-                2022
-            );
+        $this->
+        addOption(
+            'year',
+            'y',
+            InputArgument::OPTIONAL,
+            'Year of holidays that you want to get',
+            $this->defaultYear
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $isPublic = $input->getArgument('isPublic');
-        $year = $input->getArgument('year');
+        $year = $input->getOption('year');
 
         $cameras = $this->cameraRepository->findBy(['name' => self::DEFAULT_CAMERAS]);
         $rovers = $this->roverRepository->findRoversByYear($year);
 
         try {
-            $this->photoProvider->getPhotosFromHolidays($isPublic, $rovers, $cameras);
+            $this->photoProvider->getPhotosFromHolidays($rovers, $cameras);
         } catch (\Exception $exception) {
             $io->error($exception->getMessage());
             return Command::FAILURE;

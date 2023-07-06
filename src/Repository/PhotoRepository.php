@@ -45,11 +45,11 @@ class PhotoRepository extends BaseRepository
 
         if ($params->start_date && $params->end_date) {
             $queryBuilder->andWhere($queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->gte('p.date', ':start'),
-                    $queryBuilder->expr()->lte('p.date', ':end')
-                ))
+                $queryBuilder->expr()->gte('p.date', ':start'),
+                $queryBuilder->expr()->lte('p.date', ':end')
+            ))
                 ->setParameter('start', $params->start_date)
-                ->setParameter('end',$params->end_date);
+                ->setParameter('end', $params->end_date);
         }
 
         if ($params->date) {

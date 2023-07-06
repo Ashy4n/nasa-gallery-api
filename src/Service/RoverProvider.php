@@ -31,7 +31,7 @@ class RoverProvider
         $this->cameraRepository->removeAll();
     }
 
-    public function saveRovers(array $rovers)
+    public function save(array $rovers)
     {
         foreach ($rovers as $rover) {
             $newRover = new Rover();
@@ -60,7 +60,7 @@ class RoverProvider
         $this->entityManager->flush();
     }
 
-    public function getRovers()
+    public function get()
     {
         $params = [
             'api_key' => $this->nasaApiKey,

@@ -24,12 +24,5 @@ class HolidayRepository extends BaseRepository
     /**
      * @param Holiday[] $holidays
      */
-    public function saveAll(array $holidays): void
-    {
-        foreach ($holidays as $holiday) {
-            $this->save($holiday);
-        }
 
-        $this->getEntityManager()->flush();
-    }
 }
