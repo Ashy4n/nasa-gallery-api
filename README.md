@@ -108,7 +108,7 @@ Get details of a photo:
 
 This application provides the following console commands:
 
-#### Load Polish holidays data:
+#### Load holidays data:
 
 This command fetches and saves the list of holidays to the database.
 You can specify country and year arguments to get more specific data.
@@ -117,13 +117,13 @@ Default values are set to get data for Polish holidays in 2022.
 symfony console app:get-holidays
 ```
 
-#### Load Polish NASA Rovers and cameras data:
+#### Load NASA Rovers and cameras data:
 This command fetches and saves the list of rovers and cameras available by NASA api.
 ```bash
 symfony console app:get-rovers
 ```
 
-#### Load Polish NASA Photos data:
+#### Load NASA Photos data:
 This command fetches and saves photos from Nasa API for all holidays that are in database.
 You need to have rovers and cameras data in database to use this command.
 ```bash
