@@ -58,7 +58,6 @@ class GetHolidaysCommand extends Command
 
         $country = $input->getOption('country');
         $year = $input->getOption('year');
-        $remove = $input->getOption('remove');
 
         $io->info([
             sprintf("Country : %s", $country),

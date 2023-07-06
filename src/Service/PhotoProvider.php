@@ -8,6 +8,7 @@ use App\Entity\Photo;
 use App\Entity\Rover;
 use App\Repository\CameraRepository;
 use App\Repository\HolidayRepository;
+use App\Repository\PhotoRepository;
 use App\Repository\RoverRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -23,6 +24,7 @@ class PhotoProvider
         private string                 $nasaApiUrl,
         private HttpClientInterface    $client,
         private EntityManagerInterface $entityManager,
+        private PhotoRepository       $photoRepository,
         private HolidayRepository      $holidayRepository,
         private RoverRepository        $roverRepository,
         private CameraRepository       $cameraRepository
@@ -34,8 +36,13 @@ class PhotoProvider
      * @param Rover[] $rovers
      *  @param Camera[] $cameras
      */
-    public function getPhotosFromHolidays(bool $public = true, array $rovers = [], array $cameras = [])
+
+    public function getPhotosFroHolidays(bool $public = true, array $rovers = [], array $cameras = [])
     {
+        $this->photoRepository->removeAll();
+
+
+
         $holidays = $public ? $this->holidayRepository->findBy(['public' => $public]) : $this->holidayRepository->findAll();
         $filteredRovers = $rovers ? $rovers :  $this->roverRepository->findAll();
         $filteredCameras = $cameras ? $cameras : $this->cameraRepository->findAll();

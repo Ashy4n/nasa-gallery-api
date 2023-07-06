@@ -5,9 +5,7 @@ namespace App\Command;
 use App\Service\RoverProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -18,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class GetRoversCommand extends Command
 {
     public function __construct(
-       private RoverProvider $roverProvider
+        private RoverProvider $roverProvider
     )
     {
         parent::__construct();
@@ -32,7 +30,7 @@ class GetRoversCommand extends Command
             $rovers = $this->roverProvider->getRovers();
             $this->roverProvider->clearTables();
             $this->roverProvider->saveRovers($rovers);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $io->error($e->getMessage());
             return Command::FAILURE;
         }

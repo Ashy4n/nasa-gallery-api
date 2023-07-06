@@ -14,13 +14,13 @@ class RoverProvider
 {
     public function __construct(
         #[Autowire('%env(NASA_API_KEY)%')]
-        private string $nasaApiKey,
+        private string                 $nasaApiKey,
         #[Autowire('%env(NASA_API_ENDPOINT)%')]
-        private string $nasaApiUrl,
-        private HttpClientInterface $client,
+        private string                 $nasaApiUrl,
+        private HttpClientInterface    $client,
         private EntityManagerInterface $entityManager,
-        private CameraRepository $cameraRepository,
-        private RoverRepository $roverRepository
+        private CameraRepository       $cameraRepository,
+        private RoverRepository        $roverRepository
     )
     {
     }
@@ -36,10 +36,10 @@ class RoverProvider
         foreach ($rovers as $rover) {
             $newRover = new Rover();
             $newRover->setName($rover['name']);
-            $newRover->setMinDate(new \DateTime($rover['launch_date']) );
-            $newRover->setMaxDate(new \DateTime($rover['max_date']) );
+            $newRover->setMinDate(new \DateTime($rover['launch_date']));
+            $newRover->setMaxDate(new \DateTime($rover['max_date']));
 
-            foreach ($rover['cameras'] as $camera){
+            foreach ($rover['cameras'] as $camera) {
                 $existingCamera = $this->cameraRepository->findOneBy(['name' => $camera['name']]);
 
                 if ($existingCamera) {
@@ -51,7 +51,7 @@ class RoverProvider
                 $newCamera->setName($camera['name']);
                 $newCamera->setFullName($camera['full_name']);
 
-                $this->cameraRepository->save($newCamera,true);
+                $this->cameraRepository->save($newCamera, true);
             }
 
             $this->entityManager->persist($newRover);
@@ -66,10 +66,10 @@ class RoverProvider
             'api_key' => $this->nasaApiKey,
         ];
 
-        $apiParams = http_build_query($params,$arg_separator = "&",);
+        $apiParams = http_build_query($params, $arg_separator = "&",);
         $response = $this->client->request(
             'GET',
-            $this->nasaApiUrl . "?". $apiParams
+            $this->nasaApiUrl . "?" . $apiParams
         );
 
         return $response->toArray()['rovers'];

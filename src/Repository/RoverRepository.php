@@ -14,41 +14,11 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Rover[]    findAll()
  * @method Rover[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RoverRepository extends ServiceEntityRepository
+class RoverRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Rover::class);
-    }
-
-    public function save(Rover $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(Rover $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function removeAll(): void
-    {
-        $entityManager = $this->getEntityManager();
-        $entities = $this->findAll();
-
-        foreach ($entities as $entity) {
-            $entityManager->remove($entity);
-        }
-
-        $entityManager->flush();
     }
 
     public function findRoversByYear(int $year): array
