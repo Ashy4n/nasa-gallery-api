@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Repository\HolidayRepository;
 use App\Service\HolidaysProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -27,7 +28,8 @@ class GetHolidaysCommand extends Command
         private string           $defaultYear,
         #[Autowire('%env(DEFAULT_COUNTRY)%')]
         private string           $defaultCountry,
-        private HolidaysProvider $holidaysProvider
+        private HolidaysProvider $holidaysProvider,
+        private HolidayRepository $holidaysRepository
     )
     {
         parent::__construct();
@@ -64,12 +66,16 @@ class GetHolidaysCommand extends Command
             sprintf("Year : %s", $year),
         ]);
 
-        $question = new ConfirmationQuestion('Do you want to clear database before adding new records ?', true);
-        $delete = $io->askQuestion($question);
+        $question = new ConfirmationQuestion('Do you want to clear table before adding new records ?', true);
+        $remove = $io->askQuestion($question);
+
+        if ($remove){
+            $this->holidaysRepository->removeAll();
+        }
 
         try {
             $holidays = $this->holidaysProvider->get($country, $year);
-            $this->holidaysProvider->save($holidays, $delete);
+            $this->holidaysProvider->save($holidays);
         } catch (\Exception $exception) {
             $io->error($exception->getMessage());
             return Command::FAILURE;

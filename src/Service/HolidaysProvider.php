@@ -21,12 +21,8 @@ class HolidaysProvider
     {
     }
 
-    public function save(array $holidays, bool $removeOld): void
+    public function save(array $holidays): void
     {
-        if ($removeOld) {
-            $this->holidayRepository->removeAll();
-        }
-
         $serializedHolidays = $this->serializer->deserialize(json_encode($holidays), Holiday::class . '[]', 'json');
         $this->holidayRepository->saveAll($serializedHolidays);
     }

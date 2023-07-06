@@ -27,9 +27,9 @@ class GetRoversCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $rovers = $this->roverProvider->getRovers();
+            $rovers = $this->roverProvider->get();
             $this->roverProvider->clearTables();
-            $this->roverProvider->saveRovers($rovers);
+            $this->roverProvider->save($rovers);
         } catch (\Exception $e) {
             $io->error($e->getMessage());
             return Command::FAILURE;
