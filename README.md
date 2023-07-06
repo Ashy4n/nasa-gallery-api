@@ -39,14 +39,14 @@ docker compose up
 ```
 #### Get migrations:
 ```bash
-symfony conosle doctrine:migrations:migrate
+symfony console doctrine:migrations:migrate
 ```
 ## Loading data
 
 You can get all data using this command or use separate [Commands](#Commands) to get specific data.
 You can specify country and year options to get more specific data.
 ```bash
-symfony conosle app:get-defaults -y 2022 -c PL
+symfony console app:default-setup -y 2021 -c PL
 ```
 
 ## Usage
@@ -114,18 +114,18 @@ This command fetches and saves the list of holidays to the database.
 You can specify country and year arguments to get more specific data.
 Default values are set to get data for Polish holidays in 2022.
 ```bash
-symfony conosle app:get-holidays
+symfony console app:get-holidays
 ```
 
 #### Load Polish NASA Rovers and cameras data:
 This command fetches and saves the list of rovers and cameras available by NASA api.
 ```bash
-symfony conosle app:get-rovers
+symfony console app:get-rovers
 ```
 
 #### Load Polish NASA Photos data:
 This command fetches and saves photos from Nasa API for all holidays that are in database.
 You need to have rovers and cameras data in database to use this command.
 ```bash
-symfony conosle app:get-photos
+symfony console app:get-photos
 ```

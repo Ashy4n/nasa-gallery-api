@@ -56,7 +56,7 @@ class GetPhotosCommand extends Command
         $cameras = $this->cameraRepository->findBy(['name' => self::DEFAULT_CAMERAS]);
         $rovers = $this->roverRepository->findRoversByYear($year);
 
-        $question = new ConfirmationQuestion('Do you want to clear table before adding new records ?', true);
+        $question = new ConfirmationQuestion('Do you want to clear photo table before adding new records ?', true);
         $remove = $io->askQuestion($question);
 
         if ($remove){
